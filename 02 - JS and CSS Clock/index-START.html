@@ -27,47 +27,71 @@
 
     body {
       margin: 0;
-      font-size: 2rem;
       display: flex;
-      flex: 1;
       min-height: 100vh;
       align-items: center;
+      justify-content: center;
     }
 
     .clock {
-      width: 30rem;
-      height: 30rem;
-      border: 20px solid white;
+      width: 30vw;
+      height: 30vw;
+      box-sizing: border-box;
+      border: 2vw solid white;
       border-radius: 50%;
-      margin: 50px auto;
       position: relative;
-      padding: 2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
-        inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
+      padding: .5vw;
     }
 
     .clock-face {
       position: relative;
       width: 100%;
       height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
+      transform: translateY(-.3vw); /* account for the height of the clock hands */
     }
 
     .hand {
       width: 50%;
-      height: 6px;
+      height: .6vw;
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+    }
+
+    .hour-hand {
+      margin-left: 20%;
+      width: 30%;
+      height: .8vw;
+    }
+
+    .min-hand {
+      margin-left: 10%;
+      width: 40%;
+      height: .7vw;
     }
 
   </style>
 
   <script>
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
 
+    function setDate() {
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const secondsDegrees = 6 * seconds + 90; // eq to (seconds / 60) * 360
+      const minuteDegrees = now.getMinutes() * 6 + 90;
+      const hoursDegrees = now.getHours() * 30 + 90; // eq to (hours / 12) * 360
+      
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+      minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+      hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+    }
+
+    setInterval(setDate, 1000);
 
   </script>
 </body>
