@@ -15,8 +15,52 @@
     </ul>
   </form>
 <script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+  const cities = [];
+
+  // fetch cities from endpoint, parse and save response
+  fetch(endpoint).then(
+    response => response.json()
+  ).then(
+    data => cities.push(...data)
+  )
+
+  const searchInput = document.querySelector('.search');
+  searchInput.addEventListener('change', displayMatches);
+  searchInput.addEventListener('keyup', displayMatches);
+
+  const suggestions = document.querySelector('.suggestions');
+
+  function findMatches(word, cities){
+    const regex = new RegExp(word, 'gi');
+    return cities.filter(place => {
+      return place.city.match(regex) || place.state.match(regex);
+    })
+  }
+
+  function numberWithCommas(num){
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function displayMatches(){
+    const word = this.value;
+    const matches = findMatches(word, cities);
+    const redex = new RegExp(word, 'gi');
+
+    const html = matches.map(match => {
+      const cityName = match.city.replace(redex, `<span class="hl">${word}</span>`);
+      const state = match.state.replace(redex, `<span class="hl">${word}</span>`);
+
+      return `
+        <li>
+          <span class="name">${cityName}, ${state}</span>
+          <span class="population">${numberWithCommas(match.population)}</span>
+        </li>
+      `;
+    }).join('');
+    suggestions.innerHTML = html;
+  }
 </script>
 </body>
 </html>
